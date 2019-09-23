@@ -1,82 +1,78 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import uuid from 'uuid';
 import axios from 'axios';
 
-class PostFeed extends Component {
-  constructor() {
-    super();
+const useForm = (initialState) => {
+  const [values, setValues] = useState(initialState);
 
-    this.state = {
-      posts: [],
-      title: '',
-      body: '',
-    };
+  return [
+    values,
+    e => {
+      setValues({
+        ...values,
+        [e.target.name]: e.target.value,
+      })
+    }
+  ]
+}
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  componentDidMount() {
+const PostFeed = () => {
+  const [posts, setPosts ] = useState([]);
+  const [values, handleChange] = useForm({ title: '', body: '' });
+
+  // componentDidMount
+  useEffect(() => {
     axios
       .get('https://jsonplaceholder.typicode.com/posts')
       .then((res) => {
-        this.setState({
-          posts: res.data,
-        })
+        setPosts(res.data);
       })
       .catch((err) => console.log(err));
-  }
-  handleChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value,
-    })
-  }
-  handleSubmit(e) {
+  }, []);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { title, body, posts } = this.state;
+
     const postData = {
       userId: 1,
       id: uuid.v1(),
-      title: title,
-      body: body,
+      title: values.title,
+      body: values.body,
     };
 
-    this.setState({
-      posts: [postData, ...posts],
-    })
+    setPosts([postData, ...posts]);
   }
-  render() {
-    const { title, body, posts } = this.state;
-    return (
-      <>
-        <div className="container">
-          <h1 className="form-title">Post Something...</h1>
-          <form onSubmit={this.handleSubmit}>
-            <label>Title</label>
-            <input className="form-input" type="text" name="title" onChange={this.handleChange} value={title}/>
-            <br/>
-            <label>Body</label>
-            <textarea className="form-input" name="body" rows="4" onChange={this.handleChange} value={body}/>
-            <br/>
-            <button className="form-button" type="submit">Add Post</button>
-          </form>
-        </div>
-        <div className="container">
-          {posts ? 
-            posts.map((post, i) => {
-              return (
-                <div key={i} className="card">
-                  <h4>{post.title}</h4>
-                  <p>{post.body}</p>
-                </div>
-              )
-            })
-          :
-            <p>Loading...</p>
-          }
-        </div>
-      </>
-    )
-  }
+
+  return (
+    <>
+      <div className="container">
+        <h1 className="form-title">Post Something...</h1>
+        <form onSubmit={handleSubmit}>
+          <label>Title</label>
+          <input className="form-input" type="text" name="title" onChange={handleChange} value={values.title}/>
+          <br/>
+          <label>Body</label>
+          <textarea className="form-input" name="body" rows="4"  onChange={handleChange} value={values.body}/>
+          <br/>
+          <button className="form-button" type="submit">Add Post</button>
+        </form>
+      </div>
+      <div className="container">
+        {posts ? 
+          posts.map((post, i) => {
+            return (
+              <div key={i} className="card">
+                <h4>{post.title}</h4>
+                <p>{post.body}</p>
+              </div>
+            )
+          })
+        :
+          <p>Loading...</p>
+        }
+      </div>
+    </>
+  )
 }
 
 export default PostFeed;

@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import PostFeed from './components/PostFeed';
+import Test from './components/PostFeed/test';
 
 const App = () => {
   return (
     <div>
-      <PostFeed/>
+      <Test/>
     </div>
   );
 }
