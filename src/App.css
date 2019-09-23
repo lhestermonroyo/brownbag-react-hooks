@@ -20,3 +20,35 @@
 .App-link {
   color: #09d3ac;
 }
+
+.form-title {
+  text-align: center;
+}
+
+.container {
+  font-size: 16px;
+  width: 40%;
+  margin: auto;
+  margin-top: 2rem;
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+}
+
+textarea.form-input, input.form-input {
+  font-size: 16px;
+}
+
+.form-button {
+  padding: 8px;
+  background: #09d3ac;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.card {
+  border-bottom: 1px solid #e0e0e0;
+}
